@@ -54,3 +54,23 @@ module.exports = async (req, res) => {
     return res.status(500).send('Erro ao buscar o link direto: ' + error.message);
   }
 };
+    const $2 = cheerio.load(response2.data);
+    
+    // Procura o link direto de download do APK
+    let directApkLink = $2('a[href*=".apk"]').attr('href') || 
+                        $2('a[download]').attr('href') || 
+                        $2('.download-list a').attr('href');
+
+    if (directApkLink) {
+      if (!directApkLink.startsWith('http')) {
+        directApkLink = 'https://liteapks.com' + directApkLink;
+      }
+      return res.redirect(302, directApkLink);
+    } else {
+      return res.redirect(302, downloadPageLink);
+    }
+
+  } catch (error) {
+    return res.status(500).send('Erro ao buscar o link direto: ' + error.message);
+  }
+};
