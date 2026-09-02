@@ -9,31 +9,51 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Simulacao completa de navegador para evitar o bloqueio 403 da Cloudflare
     const headers = {
-      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
       'Referer': 'https://liteapks.com/'
     };
 
-    // ETAPA 1: Pega a pagina principal do jogo
-    const response1 = await axios.get(targetUrl, { headers });
-    const $1 = cheerio.load(response1.data);
-    let downloadPage = $1('a[href*="/download/"]').attr('href') || $1('a.btn-download').attr('href');
+    // 1. Acessa a pagina inicial do jogo
+    const resp1 = await axios.get(targetUrl, { headers });
+    const $1 = cheerio.load(resp1.data);
+    let step2 = $1('a[href*="/download/"]').attr('href') || $1('a.btn-download').attr('href');
 
-    if (!downloadPage) {
-      return res.status(404).send('Pagina de download nao encontrada.');
+    if (!step2) return res.status(404).send('Etapa 1 falhou.');
+    if (!step2.startsWith('http')) step2 = 'https://liteapks.com' + step2;
+
+    // 2. Acessa a pagina intermediaria
+    const resp2 = await axios.get(step2, { headers });
+    const $2 = cheerio.load(resp2.data);
+    let step3 = $2('a[href*="/download/"]').attr('href') || $2('.download-list a').attr('href');
+
+    if (!step3) step3 = step2; // Caso ja seja a pagina final
+    if (!step3.startsWith('http')) step3 = 'https://liteapks.com' + step3;
+
+    // 3. Acessa a pagina FINAL (a da imagem que voce mandou)
+    const resp3 = await axios.get(step3, { headers });
+    const $3 = cheerio.load(resp3.data);
+
+    // Pega o link real do botao verde de download
+    let apkDirectUrl = $3('a[href*=".apk"]').attr('href') || 
+                       $3('a[download]').attr('href') || 
+                       $3('a.download-button').attr('href') ||
+                       $3('.entry-download a').attr('href');
+
+    if (apkDirectUrl) {
+      if (!apkDirectUrl.startsWith('http')) {
+        apkDirectUrl = 'https://liteapks.com' + apkDirectUrl;
+      }
+      
+      // Em vez de dar res.redirect (que muda a pagina do site),
+      // enviamos o link direto para o script do seu tema baixar em segundo plano!
+      return res.status(200).send(apkDirectUrl);
+    } else {
+      // Se nao achar o link direto do APK, retorna a pagina final para o script processar
+      return res.status(200).send(step3);
     }
-
-    if (!downloadPage.startsWith('http')) {
-      downloadPage = 'https://liteapks.com' + downloadPage;
-    }
-
-    // ETAPA 2: Redireciona o navegador para a tela final onde o arquivo do APK é disparado
-    return res.redirect(302, downloadPage);
 
   } catch (error) {
-    return res.status(500).send('Erro ao buscar link: ' + error.message);
+    return res.status(500).send('Erro: ' + error.message);
   }
 };
