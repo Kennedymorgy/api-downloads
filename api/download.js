@@ -1,8 +1,6 @@
 const axios = require('axios');
-const cheerio = require('cheerio');
 
 module.exports = async (req, res) => {
-
   const targetUrl = req.query.url;
 
   if (!targetUrl) {
@@ -13,7 +11,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-
     const parsedUrl = new URL(targetUrl);
 
     if (
@@ -26,9 +23,9 @@ module.exports = async (req, res) => {
       });
     }
 
-    const response = await axios.get(targetUrl, {
-
-      timeout: 20000,
+    const resposta = await axios.get(targetUrl, {
+      timeout: 15000,
+      maxRedirects: 5,
 
       headers: {
         'User-Agent':
@@ -38,62 +35,32 @@ module.exports = async (req, res) => {
         'Accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
 
-        'Accept-Language':
-          'en-US,en;q=0.9',
-
-        'Referer':
-          'https://liteapks.com/'
+        'Accept-Language': 'en-US,en;q=0.9'
       },
 
-      maxRedirects: 5
+      // IMPORTANTE: não deixa o Axios transformar 403 em erro
+      validateStatus: () => true
     });
 
-    const $ = cheerio.load(response.data);
-
-    const links = [];
-
-    $('a').each((i, element) => {
-
-      const href = $(element).attr('href');
-
-      const text = $(element)
-        .text()
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      if (href) {
-
-        links.push({
-          texto: text,
-          href: href
-        });
-
-      }
-
-    });
+    const html =
+      typeof resposta.data === 'string'
+        ? resposta.data
+        : JSON.stringify(resposta.data);
 
     return res.status(200).json({
+      status: resposta.status,
+      server: resposta.headers.server || null,
+      contentType: resposta.headers['content-type'] || null,
+      tamanho: html.length,
 
-      success: true,
-
-      pagina: targetUrl,
-
-      totalLinks: links.length,
-
-      links: links
-
+      // Só primeiros 2000 caracteres
+      resposta: html.substring(0, 2000)
     });
 
   } catch (error) {
-
     return res.status(500).json({
-
       success: false,
-
       error: error.message
-
     });
-
   }
-
 };
