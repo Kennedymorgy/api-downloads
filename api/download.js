@@ -2,46 +2,57 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 module.exports = async (req, res) => {
-  // Libera o CORS para seu site conversar com a Vercel sem bloqueios
+  // Permite acesso de qualquer origem (CORS)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const targetUrl = req.query.url;
 
   if (!targetUrl) {
-    return res.status(400).send('URL nao informada');
+    return res.status(400).json({ success: false, error: 'URL da página não informada.' });
   }
 
   try {
-    // Faz a requisicao HTTP ultra-rapida direto na 3ª etapa
+    // Faz a requisição simulando um navegador comum
     const response = await axios.get(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5'
+        'Referer': 'https://modyolo.com/'
       },
-      timeout: 5000 // Cancela se demorar mais de 5 segundos
+      timeout: 10000
     });
 
     const $ = cheerio.load(response.data);
 
-    // Extrai o link direto do arquivo .apk dentro do botao verde
-    let apkDirectUrl = $('a[href*=".apk"]').attr('href') || 
-                       $('a[download]').attr('href') || 
-                       $('.download-button').attr('href') ||
-                       $('a.btn-download').attr('href');
+    // Busca o link que termina em .apk ou que aponta para files.modyolo.com
+    let downloadUrl = $('a[href*=".apk"]').attr('href') || 
+                      $('a[href*="files.modyolo.com"]').attr('href') ||
+                      $('a#download-button').attr('href');
 
-    if (apkDirectUrl) {
-      if (!apkDirectUrl.startsWith('http')) {
-        apkDirectUrl = 'https://liteapks.com' + apkDirectUrl;
-      }
-      // Devolve o link do arquivo .apk em menos de 1 segundo!
-      return res.status(200).send(apkDirectUrl.trim());
+    if (!downloadUrl) {
+      // Procura qualquer link dentro da área de download principal caso os seletores acima falhem
+      $('a').each((i, el) => {
+        const href = $(el).attr('href');
+        if (href && (href.includes('.apk') || href.includes('files.modyolo.com'))) {
+          downloadUrl = href;
+          return false; // Interrompe o loop
+        }
+      });
+    }
+
+    if (downloadUrl) {
+      // Redireciona o visitante diretamente para o arquivo de download (.apk)
+      return res.redirect(302, downloadUrl);
     } else {
-      return res.status(404).send('Botao .apk nao encontrado na pagina');
+      return res.status(404).json({ success: false, error: 'Botão de download não encontrado na página.' });
     }
 
   } catch (error) {
-    return res.status(500).send('Erro na Vercel: ' + error.message);
+    console.error('Erro no scraper:', error.message);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Erro ao acessar o Modyolo: ' + error.message 
+    });
   }
 };
