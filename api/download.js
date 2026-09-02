@@ -1,62 +1,47 @@
-const chromium = require('@sparticuz/chromium');
-const puppeteer = require('puppeteer-core');
+const axios = require('axios');
 const cheerio = require('cheerio');
 
 module.exports = async (req, res) => {
-  // Pega a URL enviada (que ja e a da 3ª etapa)
+  // Libera o CORS para seu site conversar com a Vercel sem bloqueios
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+
   const targetUrl = req.query.url;
 
   if (!targetUrl) {
-    return res.status(400).json({ success: false, error: 'URL da pagina final nao informada!' });
+    return res.status(400).send('URL nao informada');
   }
 
-  let browser = null;
-
   try {
-    // Inicia o navegador invisivel na Vercel
-    browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+    // Faz a requisicao HTTP ultra-rapida direto na 3ª etapa
+    const response = await axios.get(targetUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5'
+      },
+      timeout: 5000 // Cancela se demorar mais de 5 segundos
     });
 
-    const page = await browser.newPage();
+    const $ = cheerio.load(response.data);
 
-    // Emula um navegador Android real para nao travar no Cloudflare
-    await page.setUserAgent(
-      'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36'
-    );
-
-    // Entra DIRETO na pagina final (3ª etapa)
-    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
-    
-    // Aguarda carregar o conteudo do botao
-    const htmlContent = await page.content();
-    const $ = cheerio.load(htmlContent);
-
-    // Extrai o link direto do arquivo .apk dentro do botao verde "Download (198 MB)"
+    // Extrai o link direto do arquivo .apk dentro do botao verde
     let apkDirectUrl = $('a[href*=".apk"]').attr('href') || 
                        $('a[download]').attr('href') || 
                        $('.download-button').attr('href') ||
                        $('a.btn-download').attr('href');
 
-    await browser.close();
-
     if (apkDirectUrl) {
       if (!apkDirectUrl.startsWith('http')) {
         apkDirectUrl = 'https://liteapks.com' + apkDirectUrl;
       }
-      
-      // Retorna APENAS a URL do arquivo .apk em texto puro
-      // O seu script no tema vai usar isso para baixar na hora sem mudar de pagina
-      return res.status(200).send(apkDirectUrl);
+      // Devolve o link do arquivo .apk em menos de 1 segundo!
+      return res.status(200).send(apkDirectUrl.trim());
     } else {
-      return res.status(404).json({ success: false, error: 'Botao de download nao encontrado na pagina.' });
+      return res.status(404).send('Botao .apk nao encontrado na pagina');
     }
 
   } catch (error) {
-    if (browser) await browser.close();
-    return res.status(500).json({ success: false, error: 'Erro ao processar: ' + error.message });
+    return res.status(500).send('Erro na Vercel: ' + error.message);
   }
 };
