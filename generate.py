@@ -9,7 +9,7 @@ link2 = os.environ.get("LINK2", "").strip()
 if not nome_jogo:
     nome_jogo = "download"
 
-# Gera o link .html a partir do nome do jogo limpo de espaços
+# Gera o nome do arquivo .html limpo de espaços e acentos
 slug_clean = re.sub(r'[^a-z0-9\-]', '', nome_jogo.lower().replace(' ', '-'))
 slug_clean = re.sub(r'-+', '-', slug_clean).strip('-')
 if not slug_clean:
@@ -298,16 +298,20 @@ html_content = f'''<!DOCTYPE html>
 with open(filename, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-site_url = f"https://kennedymorgy.github.io/api-downloads/{filename}"
+url_raiz = f"https://kennedymorgy.github.io/{filename}"
+url_subpasta = f"https://kennedymorgy.github.io/api-downloads/{filename}"
 
 print("\n" + "="*60)
 print("🚀 PÁGINA GERADA COM SUCESSO!")
-print("👉 LINK DO SEU SITE PARA COPIAR:")
-print(site_url)
+print("👉 LINK PRINCIPAL (Geralmente este é o certo):")
+print(url_raiz)
+print("\n👉 LINK SECUNDÁRIO (Caso o repo seja api-downloads):")
+print(url_subpasta)
 print("="*60 + "\n")
 
 summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
 if summary_file:
     with open(summary_file, "a", encoding="utf-8") as sf:
         sf.write("### 🚀 PÁGINA GERADA COM SUCESSO!\n\n")
-        sf.write(f"👉 **Link do seu jogo:**\n`{site_url}`\n")
+        sf.write(f"👉 **Link do seu jogo:**\n`{url_raiz}`\n\n")
+        sf.write(f"*(Se der 404, aguarde 30 segundos ou tente: `{url_subpasta}`)*\n")
