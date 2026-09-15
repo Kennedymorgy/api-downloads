@@ -1,8 +1,16 @@
-name: Atualizar Link na Bio
+name: Criar/Atualizar Página de Jogo
 
 on:
   workflow_dispatch:
     inputs:
+      slug:
+        description: 'Nome da URL do Jogo (Ex: avakin, freefire, gta5). Sem espaço!'
+        required: true
+        default: 'avakin'
+      foto_url:
+        description: 'URL da Foto da Capa / Perfil (Opcional)'
+        required: false
+        default: ''
       texto1:
         description: 'Texto do Botão 1 (Ex: Avakin Life 64bits)'
         required: false
@@ -28,7 +36,6 @@ on:
         required: false
         default: ''
 
-# Libera permissão para o robô salvar e atualizar o site
 permissions:
   contents: write
 
@@ -44,8 +51,10 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Gerar nova página index.html
+      - name: Gerar nova página HTML
         env:
+          SLUG: ${{ github.event.inputs.slug }}
+          FOTO_URL: ${{ github.event.inputs.foto_url }}
           TEXTO1: ${{ github.event.inputs.texto1 }}
           LINK1: ${{ github.event.inputs.link1 }}
           TEXTO2: ${{ github.event.inputs.texto2 }}
@@ -58,12 +67,14 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Atualizando página de downloads" || exit 0
+          git add .
+          git commit -m "Adicionando jogo ${{ github.event.inputs.slug }}" || exit 0
           git push
 
-      - name: Gerar Link para Copiar
+      - name: Gerar Link Exclusivo para Copiar
         run: |
-          echo "### 🚀 SEU SITE FOI ATUALIZADO!" >> $GITHUB_STEP_SUMMARY
+          SLUG_NAME="${{ github.event.inputs.slug }}"
+          echo "### 🚀 PÁGINA DO JOGO CRIADA COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "👉 **Clique aqui para ver seu site:** [https://kennedymorgy.github.io/api-downloads/](https://kennedymorgy.github.io/api-downloads/)" >> $GITHUB_STEP_SUMMARY
+          echo "👉 **LINK EXCLUSIVO DO SEU JOGO:**" >> $GITHUB_STEP_SUMMARY
+          echo "[https://kennedymorgy.github.io/api-downloads/${SLUG_NAME}.html](https://kennedymorgy.github.io/api-downloads/${SLUG_NAME}.html)" >> $GITHUB_STEP_SUMMARY
