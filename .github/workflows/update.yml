@@ -1,0 +1,65 @@
+name: Atualizar Link na Bio
+
+on:
+  workflow_dispatch:
+    inputs:
+      game_name:
+        description: 'Nome do Jogo/App (Ex: BitLife BR Mod)'
+        required: true
+        default: 'Jogo Mod APK'
+      link1:
+        description: 'Link de Download 1 (Obrigatório)'
+        required: true
+      label1:
+        description: 'Tag do Link 1 (Ex: 64bits / APK)'
+        required: false
+        default: '64bits'
+      link2:
+        description: 'Link de Download 2 (Opcional - Deixe vazio se não usar)'
+        required: false
+        default: ''
+      label2:
+        description: 'Tag do Link 2 (Ex: 32bits / OBB)'
+        required: false
+        default: '32bits'
+      link3:
+        description: 'Link de Download 3 (Opcional - Deixe vazio se não usar)'
+        required: false
+        default: ''
+      label3:
+        description: 'Tag do Link 3 (Ex: Mod Menu)'
+        required: false
+        default: 'Mod Menu'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Gerar nova página index.html
+        env:
+          GAME_NAME: ${{ github.event.inputs.game_name }}
+          LINK1: ${{ github.event.inputs.link1 }}
+          LABEL1: ${{ github.event.inputs.label1 }}
+          LINK2: ${{ github.event.inputs.link2 }}
+          LABEL2: ${{ github.event.inputs.label2 }}
+          LINK3: ${{ github.event.inputs.link3 }}
+          LABEL3: ${{ github.event.inputs.label3 }}
+        run: python generate.py
+
+      - name: Salvar e Publicar alterações
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Atualizando página para o jogo: ${{ github.event.inputs.game_name }}" || echo "Sem alterações"
+          git push
