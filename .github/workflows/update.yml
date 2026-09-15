@@ -28,6 +28,10 @@ on:
         required: false
         default: ''
 
+# Libera permissão para o robô salvar e atualizar o site
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
