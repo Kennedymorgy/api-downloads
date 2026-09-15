@@ -3,34 +3,30 @@ name: Atualizar Link na Bio
 on:
   workflow_dispatch:
     inputs:
-      nome_jogo:
-        description: 'Nome do Jogo / App (Ex: BitLife BR Mod)'
-        required: true
-        default: 'Jogo Mod APK'
+      texto1:
+        description: 'Texto do Botão 1 (Ex: Avakin Life 64bits)'
+        required: false
+        default: ''
       link1:
-        description: 'Link 1 de Download (Deixe vazio se não usar)'
+        description: 'Link de Download 1'
         required: false
         default: ''
-      tag1:
-        description: 'Tag do Link 1 (Ex: 64bits, APK, OBB)'
+      texto2:
+        description: 'Texto do Botão 2 (Ex: Avakin Life 32bits)'
         required: false
-        default: '64bits'
+        default: ''
       link2:
-        description: 'Link 2 de Download (Deixe vazio se não usar)'
+        description: 'Link de Download 2'
         required: false
         default: ''
-      tag2:
-        description: 'Tag do Link 2 (Ex: 32bits, OBB)'
+      texto3:
+        description: 'Texto do Botão 3 (Ex: OBB / Outro App)'
         required: false
-        default: '32bits'
+        default: ''
       link3:
-        description: 'Link 3 de Download (Deixe vazio se não usar)'
+        description: 'Link de Download 3'
         required: false
         default: ''
-      tag3:
-        description: 'Tag do Link 3 (Ex: Mod Menu, Outro App)'
-        required: false
-        default: 'OBB'
 
 jobs:
   build:
@@ -46,13 +42,12 @@ jobs:
 
       - name: Gerar nova página index.html
         env:
-          NOME_JOGO: ${{ github.event.inputs.nome_jogo }}
+          TEXTO1: ${{ github.event.inputs.texto1 }}
           LINK1: ${{ github.event.inputs.link1 }}
-          TAG1: ${{ github.event.inputs.tag1 }}
+          TEXTO2: ${{ github.event.inputs.texto2 }}
           LINK2: ${{ github.event.inputs.link2 }}
-          TAG2: ${{ github.event.inputs.tag2 }}
+          TEXTO3: ${{ github.event.inputs.texto3 }}
           LINK3: ${{ github.event.inputs.link3 }}
-          TAG3: ${{ github.event.inputs.tag3 }}
         run: python generate.py
 
       - name: Salvar e Publicar alterações
@@ -60,5 +55,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Atualizando página para: ${{ github.event.inputs.nome_jogo }}" || exit 0
+          git commit -m "Atualizando página de downloads" || exit 0
           git push
+
+      - name: Gerar Link para Copiar
+        run: |
+          echo "### 🚀 SEU SITE FOI ATUALIZADO!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "👉 **Clique aqui para ver seu site:** [https://kennedymorgy.github.io/api-downloads/](https://kennedymorgy.github.io/api-downloads/)" >> $GITHUB_STEP_SUMMARY
