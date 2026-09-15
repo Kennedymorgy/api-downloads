@@ -1,30 +1,25 @@
 import os
 
-# Pega os dados enviados pelo Bot
-nome_jogo = os.environ.get("NOME_JOGO", "Jogo Mod APK").strip()
-
+texto1 = os.environ.get("TEXTO1", "").strip()
 link1 = os.environ.get("LINK1", "").strip()
-tag1 = os.environ.get("TAG1", "64bits").strip()
 
+texto2 = os.environ.get("TEXTO2", "").strip()
 link2 = os.environ.get("LINK2", "").strip()
-tag2 = os.environ.get("TAG2", "32bits").strip()
 
+texto3 = os.environ.get("TEXTO3", "").strip()
 link3 = os.environ.get("LINK3", "").strip()
-tag3 = os.environ.get("TAG3", "OBB").strip()
 
-# Monta os botões de download dinamicamente (SÓ CRIA SE TIVER LINK)
 downloads_html = ""
 
 links_data = [
-    (link1, tag1),
-    (link2, tag2),
-    (link3, tag3),
+    (texto1, link1),
+    (texto2, link2),
+    (texto3, link3),
 ]
 
-for link, tag in links_data:
-    if link:  # Só insere se o link NÃO estiver vazio!
-        if not tag:
-            tag = "Download"
+for texto, link in links_data:
+    if link:  # Só cria o botão se o link for preenchido
+        titulo = texto if texto else "Download APK"
         downloads_html += f'''
       <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
@@ -35,10 +30,9 @@ for link, tag in links_data:
           </svg>
         </div>
         <div class="btn-content">
-          <span class="btn-title">{nome_jogo}</span>
+          <span class="btn-title">{titulo}</span>
           <span class="btn-subtitle">Clique para baixar</span>
         </div>
-        <span class="badge-dl">{tag}</span>
       </a>
 '''
 
@@ -47,7 +41,7 @@ html_content = f'''<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>k404modapk - Download</title>
+  <title>k404modapk - Downloads</title>
   <style>
     * {{
       margin: 0;
@@ -181,18 +175,6 @@ html_content = f'''<!DOCTYPE html>
       color: #64748b;
     }}
 
-    .badge-dl {{
-      margin-left: auto;
-      background-color: #0f172a;
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }}
-
     footer {{
       margin-top: 36px;
     }}
@@ -267,4 +249,4 @@ html_content = f'''<!DOCTYPE html>
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html atualizado com sucesso!")
+print("index.html gerado com sucesso!")
