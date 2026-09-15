@@ -9,7 +9,7 @@ link2 = os.environ.get("LINK2", "").strip()
 if not nome_jogo:
     nome_jogo = "download"
 
-# Gera o nome do arquivo .html limpo de espaços e acentos
+# Gera o nome do arquivo .html limpo
 slug_clean = re.sub(r'[^a-z0-9\-]', '', nome_jogo.lower().replace(' ', '-'))
 slug_clean = re.sub(r'-+', '-', slug_clean).strip('-')
 if not slug_clean:
@@ -35,7 +35,7 @@ for texto, link in links_data:
         downloads_html += f'''
       <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -43,7 +43,6 @@ for texto, link in links_data:
         </div>
         <div class="btn-content">
           <span class="btn-title">{texto}</span>
-          <span class="btn-subtitle">Clique para baixar o arquivo</span>
         </div>
       </a>
 '''
@@ -155,8 +154,8 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .btn-icon {{
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       flex-shrink: 0;
       margin-right: 14px;
       display: flex;
@@ -168,10 +167,11 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       text-align: left;
+      width: 100%;
     }}
 
     .btn-title {{
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 700;
       line-height: 1.25;
     }}
@@ -222,15 +222,30 @@ html_content = f'''<!DOCTYPE html>
       width: 100%;
     }}
 
+    /* ESTILO EXATO DA SUA IMAGEM LINKME.BIO */
     .btn-download {{
       background: #ffffff;
-      color: #0f172a;
-      border: 2px solid #e2e8f0;
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      color: #000000;
+      border: 1.5px solid #000000;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0px 5px 0px #000000;
       position: relative;
       overflow: hidden;
     }}
 
+    .btn-download .btn-content {{
+      align-items: center;
+      justify-content: center;
+    }}
+
+    .btn-download .btn-title {{
+      color: #000000;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }}
+
+    /* EFEITO DE LUZ/BRILHO PASSANDO */
     .btn-download::after {{
       content: '';
       position: absolute;
@@ -241,7 +256,7 @@ html_content = f'''<!DOCTYPE html>
       background: linear-gradient(
         60deg,
         rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.65) 50%,
+        rgba(0, 0, 0, 0.06) 50%,
         rgba(255, 255, 255, 0) 100%
       );
       transform: rotate(25deg);
@@ -258,18 +273,6 @@ html_content = f'''<!DOCTYPE html>
       100% {{
         left: 150%;
       }}
-    }}
-
-    .btn-download:hover {{
-      border-color: #2563eb;
-    }}
-
-    .btn-download .btn-title {{
-      color: #0f172a;
-    }}
-
-    .btn-download .btn-subtitle {{
-      color: #64748b;
     }}
 
     footer {{
