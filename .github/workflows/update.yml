@@ -1,14 +1,14 @@
-name: Criar/Atualizar Página de Jogo
+name: Criar Página de Jogo
 
 on:
   workflow_dispatch:
     inputs:
       slug:
-        description: 'Nome da URL do Jogo (Ex: avakin, freefire, gta5). Sem espaço!'
+        description: 'Nome do Jogo/URL (Ex: avakin, free fire, gta 5)'
         required: true
         default: 'avakin'
       foto_url:
-        description: 'URL da Foto da Capa / Perfil (Opcional)'
+        description: 'URL da Foto (Deixe em branco para usar a sua foto oficial)'
         required: false
         default: ''
       texto1:
@@ -28,7 +28,7 @@ on:
         required: false
         default: ''
       texto3:
-        description: 'Texto do Botão 3 (Ex: OBB / Outro App)'
+        description: 'Texto do Botão 3 (Ex: Arquivo OBB)'
         required: false
         default: ''
       link3:
@@ -51,7 +51,7 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Gerar nova página HTML
+      - name: Gerar Página e Link
         env:
           SLUG: ${{ github.event.inputs.slug }}
           FOTO_URL: ${{ github.event.inputs.foto_url }}
@@ -61,20 +61,13 @@ jobs:
           LINK2: ${{ github.event.inputs.link2 }}
           TEXTO3: ${{ github.event.inputs.texto3 }}
           LINK3: ${{ github.event.inputs.link3 }}
+          GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
         run: python generate.py
 
-      - name: Salvar e Publicar alterações
+      - name: Salvar no GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Adicionando jogo ${{ github.event.inputs.slug }}" || exit 0
           git push
-
-      - name: Gerar Link Exclusivo para Copiar
-        run: |
-          SLUG_NAME="${{ github.event.inputs.slug }}"
-          echo "### 🚀 PÁGINA DO JOGO CRIADA COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "👉 **LINK EXCLUSIVO DO SEU JOGO:**" >> $GITHUB_STEP_SUMMARY
-          echo "[https://kennedymorgy.github.io/api-downloads/${SLUG_NAME}.html](https://kennedymorgy.github.io/api-downloads/${SLUG_NAME}.html)" >> $GITHUB_STEP_SUMMARY
