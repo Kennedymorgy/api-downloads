@@ -48,6 +48,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          touch .nojekyll
           git add .
           git commit -m "Adicionando jogo ${{ github.event.inputs.nome_jogo }}" || exit 0
           git push
