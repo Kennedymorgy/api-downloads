@@ -298,20 +298,16 @@ html_content = f'''<!DOCTYPE html>
 with open(filename, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-url_raiz = f"https://kennedymorgy.github.io/{filename}"
-url_subpasta = f"https://kennedymorgy.github.io/api-downloads/{filename}"
+url_final = f"https://kennedymorgy.github.io/api-downloads/{filename}"
 
 print("\n" + "="*60)
 print("🚀 PÁGINA GERADA COM SUCESSO!")
-print("👉 LINK PRINCIPAL (Geralmente este é o certo):")
-print(url_raiz)
-print("\n👉 LINK SECUNDÁRIO (Caso o repo seja api-downloads):")
-print(url_subpasta)
+print("👉 LINK DO SEU SITE:")
+print(url_final)
 print("="*60 + "\n")
 
 summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
 if summary_file:
     with open(summary_file, "a", encoding="utf-8") as sf:
         sf.write("### 🚀 PÁGINA GERADA COM SUCESSO!\n\n")
-        sf.write(f"👉 **Link do seu jogo:**\n`{url_raiz}`\n\n")
-        sf.write(f"*(Se der 404, aguarde 30 segundos ou tente: `{url_subpasta}`)*\n")
+        sf.write(f"👉 **Link do seu jogo:**\n`{url_final}`\n")
