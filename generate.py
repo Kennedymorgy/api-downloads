@@ -1,15 +1,15 @@
 import os
 import re
 
-slug = os.environ.get("SLUG", "index").strip().lower()
+# Pega o nome digitado, remove acentos e converte espaços em hífen
+raw_slug = os.environ.get("SLUG", "avakin").strip().lower()
+slug_clean = re.sub(r'[^a-z0-9\-]', '', raw_slug.replace(' ', '-'))
+if not slug_clean:
+    slug_clean = "download"
 
-# Formata o nome do arquivo para ser seguro em URLs
-if not slug or slug == "index":
-    filename = "index.html"
-else:
-    slug_clean = re.sub(r'[^a-z0-9\-]', '', slug.replace(' ', '-'))
-    filename = f"{slug_clean}.html"
+filename = f"{slug_clean}.html"
 
+# Foto oficial padrão
 foto_url = os.environ.get("FOTO_URL", "").strip()
 if not foto_url:
     foto_url = "https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg"
@@ -28,13 +28,16 @@ links_data = [
 ]
 
 downloads_html = ""
+has_downloads = False
+
 for texto, link in links_data:
     if link:
+        has_downloads = True
         titulo = texto if texto else "Download APK"
         downloads_html += f'''
       <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -42,14 +45,18 @@ for texto, link in links_data:
         </div>
         <div class="btn-content">
           <span class="btn-title">{titulo}</span>
-          <span class="btn-subtitle">Clique para baixar arquivo</span>
-        </div>
-        <div class="btn-arrow">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#64748b" stroke-width="2.5">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+          <span class="btn-subtitle">Clique para baixar</span>
         </div>
       </a>
+'''
+
+download_section_html = ""
+if has_downloads:
+    download_section_html = f'''
+    <div class="download-section">
+      <div class="section-title">⚡ ÁREA DE DOWNLOAD ⚡</div>
+      {downloads_html}
+    </div>
 '''
 
 html_content = f'''<!DOCTYPE html>
@@ -67,19 +74,19 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     body {{
-      background-color: #0f172a;
-      color: #f8fafc;
+      background-color: #f8fafc;
+      color: #0f172a;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       min-height: 100vh;
-      padding: 36px 16px 24px;
+      padding: 36px 16px 28px;
     }}
 
     .container {{
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -89,48 +96,31 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 28px;
-    }}
-
-    .profile-img-container {{
-      position: relative;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      padding: 3px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
-      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+      margin-bottom: 24px;
     }}
 
     .profile-img {{
-      width: 100%;
-      height: 100%;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       object-fit: cover;
-      background-color: #1e293b;
-      border: 3px solid #0f172a;
+      border: 4px solid #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }}
 
     .profile-name {{
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 800;
       margin-top: 14px;
-      color: #ffffff;
+      color: #0f172a;
       letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }}
-
-    .verified-badge {{
-      color: #38bdf8;
     }}
 
     .links-wrapper {{
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }}
 
     .btn {{
@@ -139,25 +129,19 @@ html_content = f'''<!DOCTYPE html>
       justify-content: flex-start;
       width: 100%;
       padding: 16px 18px;
-      border-radius: 20px;
+      border-radius: 18px;
       text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       position: relative;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }}
-
-    .btn:hover {{
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
     }}
 
     .btn:active {{
-      transform: translateY(1px);
+      transform: scale(0.98);
     }}
 
     .btn-icon {{
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       flex-shrink: 0;
       margin-right: 14px;
       display: flex;
@@ -169,7 +153,6 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       text-align: left;
-      flex-grow: 1;
     }}
 
     .btn-title {{
@@ -179,42 +162,66 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .btn-subtitle {{
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       margin-top: 2px;
-      opacity: 0.85;
     }}
 
-    .btn-arrow {{
-      display: flex;
-      align-items: center;
-    }}
-
-    /* INSTAGRAM */
+    /* BOTÕES REDES SOCIAIS */
     .btn-instagram {{
-      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
       color: #ffffff;
+      box-shadow: 0 6px 18px rgba(220, 39, 67, 0.25);
+    }}
+    .btn-instagram .btn-subtitle {{
+      color: rgba(255, 255, 255, 0.9);
     }}
 
-    /* YOUTUBE */
     .btn-youtube {{
-      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      background-color: #FF0000;
       color: #ffffff;
+      box-shadow: 0 6px 18px rgba(255, 0, 0, 0.25);
+    }}
+    .btn-youtube .btn-subtitle {{
+      color: rgba(255, 255, 255, 0.9);
     }}
 
-    /* BOTÃO DE DOWNLOAD PREMIUM */
+    /* ESPAÇAMENTO E ÁREA DE DOWNLOAD */
+    .download-section {{
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }}
+
+    .section-title {{
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 2px;
+    }}
+
+    /* BOTÃO DE DOWNLOAD MELHORADO */
     .btn-download {{
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      color: #ffffff;
-      border: 2px solid #38bdf8;
-      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    }}
+
+    .btn-download:hover {{
+      border-color: #2563eb;
     }}
 
     .btn-download .btn-title {{
-      color: #ffffff;
+      color: #0f172a;
     }}
 
     .btn-download .btn-subtitle {{
-      color: #94a3b8;
+      color: #64748b;
     }}
 
     footer {{
@@ -223,17 +230,16 @@ html_content = f'''<!DOCTYPE html>
 
     .footer-link {{
       font-size: 0.88rem;
-      color: #94a3b8;
+      color: #64748b;
       text-decoration: none;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: color 0.2s ease;
     }}
 
     .footer-link:hover {{
-      color: #38bdf8;
+      color: #0f172a;
     }}
   </style>
 </head>
@@ -242,15 +248,8 @@ html_content = f'''<!DOCTYPE html>
   <div class="container">
 
     <div class="profile">
-      <div class="profile-img-container">
-        <img src="{foto_url}" alt="k404modapk" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=K404&background=0D8ABC&color=fff&size=128';">
-      </div>
-      <h1 class="profile-name">
-        k404modapk
-        <svg class="verified-badge" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-        </svg>
-      </h1>
+      <img src="{foto_url}" alt="k404modapk" class="profile-img">
+      <h1 class="profile-name">k404modapk</h1>
     </div>
 
     <div class="links-wrapper">
@@ -281,7 +280,7 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </a>
 
-{downloads_html}
+      {download_section_html}
 
     </div>
   </div>
@@ -298,5 +297,14 @@ html_content = f'''<!DOCTYPE html>
 
 with open(filename, "w", encoding="utf-8") as f:
     f.write(html_content)
+
+# Gera a mensagem limpa com o link correto no GitHub Actions Summary
+summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+if summary_file:
+    site_url = f"https://kennedymorgy.github.io/api-downloads/{filename}"
+    with open(summary_file, "a", encoding="utf-8") as sf:
+        sf.write("### 🚀 PÁGINA CRIADA COM SUCESSO!\n\n")
+        sf.write(f"👉 **Copie o link do seu jogo:**\n`{site_url}`\n\n")
+        sf.write(f"🔗 [Clique aqui para abrir no navegador]({site_url})\n")
 
 print(f"Página {filename} gerada com sucesso!")
