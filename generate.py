@@ -1,30 +1,29 @@
 import os
 import re
 
-# Pega o nome digitado, remove acentos e converte espaços em hífen
-raw_slug = os.environ.get("SLUG", "avakin").strip().lower()
-slug_clean = re.sub(r'[^a-z0-9\-]', '', raw_slug.replace(' ', '-'))
+nome_jogo = os.environ.get("NOME_JOGO", "").strip()
+link1 = os.environ.get("LINK1", "").strip()
+nome2 = os.environ.get("NOME2", "").strip()
+link2 = os.environ.get("LINK2", "").strip()
+
+if not nome_jogo:
+    nome_jogo = "download"
+
+# Gera o link .html a partir do nome do jogo limpo de espaços
+slug_clean = re.sub(r'[^a-z0-9\-]', '', nome_jogo.lower().replace(' ', '-'))
+slug_clean = re.sub(r'-+', '-', slug_clean).strip('-')
 if not slug_clean:
     slug_clean = "download"
 
 filename = f"{slug_clean}.html"
+foto_url = "https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg"
 
-# Foto oficial padrão
-foto_url = os.environ.get("FOTO_URL", "").strip()
-if not foto_url:
-    foto_url = "https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg"
-
-texto1 = os.environ.get("TEXTO1", "").strip()
-link1 = os.environ.get("LINK1", "").strip()
-texto2 = os.environ.get("TEXTO2", "").strip()
-link2 = os.environ.get("LINK2", "").strip()
-texto3 = os.environ.get("TEXTO3", "").strip()
-link3 = os.environ.get("LINK3", "").strip()
+titulo1 = nome_jogo
+titulo2 = nome2 if nome2 else "Arquivo Secundário"
 
 links_data = [
-    (texto1, link1),
-    (texto2, link2),
-    (texto3, link3),
+    (titulo1, link1),
+    (titulo2, link2)
 ]
 
 downloads_html = ""
@@ -33,19 +32,18 @@ has_downloads = False
 for texto, link in links_data:
     if link:
         has_downloads = True
-        titulo = texto if texto else "Download APK"
         downloads_html += f'''
       <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
         </div>
         <div class="btn-content">
-          <span class="btn-title">{titulo}</span>
-          <span class="btn-subtitle">Clique para baixar</span>
+          <span class="btn-title">{texto}</span>
+          <span class="btn-subtitle">Clique para baixar o arquivo</span>
         </div>
       </a>
 '''
@@ -54,7 +52,9 @@ download_section_html = ""
 if has_downloads:
     download_section_html = f'''
     <div class="download-section">
-      <div class="section-title">⚡ ÁREA DE DOWNLOAD ⚡</div>
+      <div class="section-divider">
+        <span>ÁREA DE DOWNLOAD</span>
+      </div>
       {downloads_html}
     </div>
 '''
@@ -140,8 +140,8 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .btn-icon {{
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       flex-shrink: 0;
       margin-right: 14px;
       display: flex;
@@ -166,11 +166,10 @@ html_content = f'''<!DOCTYPE html>
       margin-top: 2px;
     }}
 
-    /* BOTÕES REDES SOCIAIS */
     .btn-instagram {{
       background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
       color: #ffffff;
-      box-shadow: 0 6px 18px rgba(220, 39, 67, 0.25);
+      box-shadow: 0 6px 18px rgba(220, 39, 67, 0.22);
     }}
     .btn-instagram .btn-subtitle {{
       color: rgba(255, 255, 255, 0.9);
@@ -179,13 +178,12 @@ html_content = f'''<!DOCTYPE html>
     .btn-youtube {{
       background-color: #FF0000;
       color: #ffffff;
-      box-shadow: 0 6px 18px rgba(255, 0, 0, 0.25);
+      box-shadow: 0 6px 18px rgba(255, 0, 0, 0.22);
     }}
     .btn-youtube .btn-subtitle {{
       color: rgba(255, 255, 255, 0.9);
     }}
 
-    /* ESPAÇAMENTO E ÁREA DE DOWNLOAD */
     .download-section {{
       margin-top: 28px;
       display: flex;
@@ -194,22 +192,26 @@ html_content = f'''<!DOCTYPE html>
       width: 100%;
     }}
 
-    .section-title {{
+    .section-divider {{
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 4px;
+    }}
+
+    .section-divider span {{
       font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       color: #64748b;
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 2px;
+      width: 100%;
     }}
 
-    /* BOTÃO DE DOWNLOAD MELHORADO */
     .btn-download {{
       background: #ffffff;
       color: #0f172a;
       border: 2px solid #e2e8f0;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
     }}
 
     .btn-download:hover {{
@@ -254,7 +256,6 @@ html_content = f'''<!DOCTYPE html>
 
     <div class="links-wrapper">
 
-      <!-- INSTAGRAM FIXO -->
       <a href="https://www.instagram.com/kennedy_morgy" target="_blank" class="btn btn-instagram">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
@@ -267,7 +268,6 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </a>
 
-      <!-- YOUTUBE FIXO -->
       <a href="https://www.youtube.com/@K404Oficial" target="_blank" class="btn btn-youtube">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="30" height="30" fill="#ffffff">
@@ -280,7 +280,7 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </a>
 
-      {download_section_html}
+{download_section_html}
 
     </div>
   </div>
@@ -298,13 +298,16 @@ html_content = f'''<!DOCTYPE html>
 with open(filename, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-# Gera a mensagem limpa com o link correto no GitHub Actions Summary
+site_url = f"https://kennedymorgy.github.io/api-downloads/{filename}"
+
+print("\n" + "="*60)
+print("🚀 PÁGINA GERADA COM SUCESSO!")
+print("👉 LINK DO SEU SITE PARA COPIAR:")
+print(site_url)
+print("="*60 + "\n")
+
 summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
 if summary_file:
-    site_url = f"https://kennedymorgy.github.io/api-downloads/{filename}"
     with open(summary_file, "a", encoding="utf-8") as sf:
-        sf.write("### 🚀 PÁGINA CRIADA COM SUCESSO!\n\n")
-        sf.write(f"👉 **Copie o link do seu jogo:**\n`{site_url}`\n\n")
-        sf.write(f"🔗 [Clique aqui para abrir no navegador]({site_url})\n")
-
-print(f"Página {filename} gerada com sucesso!")
+        sf.write("### 🚀 PÁGINA GERADA COM SUCESSO!\n\n")
+        sf.write(f"👉 **Link do seu jogo:**\n`{site_url}`\n")
