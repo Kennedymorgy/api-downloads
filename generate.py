@@ -65,6 +65,9 @@ html_content = f'''<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>k404modapk - Downloads</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     * {{
       margin: 0;
@@ -79,9 +82,9 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       min-height: 100vh;
-      padding: 36px 16px 28px;
+      padding: 24px 16px 32px;
     }}
 
     .container {{
@@ -96,24 +99,36 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }}
 
     .profile-img {{
-      width: 96px;
-      height: 96px;
+      width: 108px;
+      height: 108px;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid #ffffff;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      border: none;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }}
 
     .profile-name {{
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-top: 14px;
+      font-family: 'Dancing Script', cursive, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin-top: 6px;
       color: #0f172a;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.02em;
+      display: inline-block;
+      animation: pulse 3s ease-in-out infinite;
+    }}
+
+    @keyframes pulse {{
+      0%, 100% {{
+        transform: scale(1);
+      }}
+      50% {{
+        transform: scale(1.09);
+      }}
     }}
 
     .links-wrapper {{
@@ -185,7 +200,7 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .download-section {{
-      margin-top: 28px;
+      margin-top: 24px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -196,7 +211,7 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       align-items: center;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }}
 
     .section-divider span {{
@@ -212,6 +227,37 @@ html_content = f'''<!DOCTYPE html>
       color: #0f172a;
       border: 2px solid #e2e8f0;
       box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      position: relative;
+      overflow: hidden;
+    }}
+
+    .btn-download::after {{
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -150%;
+      width: 70%;
+      height: 200%;
+      background: linear-gradient(
+        60deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.65) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(25deg);
+      animation: shine 3.5s infinite ease-in-out;
+    }}
+
+    @keyframes shine {{
+      0% {{
+        left: -150%;
+      }}
+      25% {{
+        left: 150%;
+      }}
+      100% {{
+        left: 150%;
+      }}
     }}
 
     .btn-download:hover {{
@@ -227,21 +273,30 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     footer {{
-      margin-top: 40px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
     }}
 
     .footer-link {{
-      font-size: 0.88rem;
-      color: #64748b;
+      font-size: 0.9rem;
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      padding: 10px 20px;
+      border-radius: 25px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+      transition: transform 0.15s ease;
     }}
 
-    .footer-link:hover {{
-      color: #0f172a;
+    .footer-link:active {{
+      transform: scale(0.96);
     }}
   </style>
 </head>
@@ -283,13 +338,14 @@ html_content = f'''<!DOCTYPE html>
 {download_section_html}
 
     </div>
-  </div>
 
-  <footer>
-    <a href="https://k-404modapk.blogspot.com" target="_blank" class="footer-link">
-      🌐 k-404modapk.blogspot.com
-    </a>
-  </footer>
+    <footer>
+      <a href="https://k-404modapk.blogspot.com" target="_blank" class="footer-link">
+        🌐 Visite nosso Blog Oficial
+      </a>
+    </footer>
+
+  </div>
 
 </body>
 </html>
