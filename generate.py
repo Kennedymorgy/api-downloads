@@ -1,23 +1,32 @@
 import os
 
-# Dados do Jogo enviados pelo GitHub Actions
-game_name = os.getenv("GAME_NAME", "Mod APK").strip()
-link1 = os.getenv("LINK1", "").strip()
-label1 = os.getenv("LABEL1", "BAIXAR 64bits").strip()
+# Pega os dados enviados pelo Bot
+nome_jogo = os.environ.get("NOME_JOGO", "Jogo Mod APK").strip()
 
-link2 = os.getenv("LINK2", "").strip()
-label2 = os.getenv("LABEL2", "BAIXAR 32bits").strip()
+link1 = os.environ.get("LINK1", "").strip()
+tag1 = os.environ.get("TAG1", "64bits").strip()
 
-link3 = os.getenv("LINK3", "").strip()
-label3 = os.getenv("LABEL3", "SERVIDOR 2").strip()
+link2 = os.environ.get("LINK2", "").strip()
+tag2 = os.environ.get("TAG2", "32bits").strip()
 
-# Função para criar o botão de download de forma inteligente
-def make_btn(url, label):
-    if not url:
-        return ""
-    return f'''
-      <!-- Botão de Download -->
-      <a href="{url}" target="_blank" class="btn btn-download">
+link3 = os.environ.get("LINK3", "").strip()
+tag3 = os.environ.get("TAG3", "OBB").strip()
+
+# Monta os botões de download dinamicamente (SÓ CRIA SE TIVER LINK)
+downloads_html = ""
+
+links_data = [
+    (link1, tag1),
+    (link2, tag2),
+    (link3, tag3),
+]
+
+for link, tag in links_data:
+    if link:  # Só insere se o link NÃO estiver vazio!
+        if not tag:
+            tag = "Download"
+        downloads_html += f'''
+      <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -26,28 +35,19 @@ def make_btn(url, label):
           </svg>
         </div>
         <div class="btn-content">
-          <span class="btn-title">{game_name}</span>
-          <span class="btn-subtitle">Clique para Fazer Download</span>
+          <span class="btn-title">{nome_jogo}</span>
+          <span class="btn-subtitle">Clique para baixar</span>
         </div>
-        <span class="badge-dl">{label}</span>
-      </a>'''
+        <span class="badge-dl">{tag}</span>
+      </a>
+'''
 
-# Gera os botões conforme a quantidade de links preenchidos
-download_buttons_html = ""
-if link1:
-    download_buttons_html += make_btn(link1, label1)
-if link2:
-    download_buttons_html += make_btn(link2, label2)
-if link3:
-    download_buttons_html += make_btn(link3, label3)
-
-# Template HTML Completo
 html_content = f'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>k404modapk - {game_name}</title>
+  <title>k404modapk - Download</title>
   <style>
     * {{
       margin: 0;
@@ -69,23 +69,22 @@ html_content = f'''<!DOCTYPE html>
 
     .container {{
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }}
 
-    /* Perfil Centralizado */
     .profile {{
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 26px;
     }}
 
     .profile-img {{
-      width: 105px;
-      height: 105px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -107,16 +106,15 @@ html_content = f'''<!DOCTYPE html>
       gap: 14px;
     }}
 
-    /* Base do Botão */
     .btn {{
       display: flex;
       align-items: center;
       justify-content: flex-start;
       width: 100%;
-      padding: 16px 20px;
+      padding: 16px 18px;
       border-radius: 18px;
       text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       position: relative;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }}
@@ -152,7 +150,6 @@ html_content = f'''<!DOCTYPE html>
       margin-top: 2px;
     }}
 
-    /* Botão Instagram Oficial */
     .btn-instagram {{
       background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
       color: #ffffff;
@@ -161,7 +158,6 @@ html_content = f'''<!DOCTYPE html>
       color: rgba(255, 255, 255, 0.9);
     }}
 
-    /* Botão YouTube Oficial */
     .btn-youtube {{
       background-color: #FF0000;
       color: #ffffff;
@@ -170,7 +166,6 @@ html_content = f'''<!DOCTYPE html>
       color: rgba(255, 255, 255, 0.9);
     }}
 
-    /* Botões de Download */
     .btn-download {{
       background-color: #ffffff;
       color: #0f172a;
@@ -183,7 +178,7 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .btn-download .btn-subtitle {{
-      color: #475569;
+      color: #64748b;
     }}
 
     .badge-dl {{
@@ -191,14 +186,13 @@ html_content = f'''<!DOCTYPE html>
       background-color: #0f172a;
       color: #ffffff;
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 6px 12px;
       border-radius: 12px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }}
 
-    /* Rodapé */
     footer {{
       margin-top: 36px;
     }}
@@ -221,16 +215,15 @@ html_content = f'''<!DOCTYPE html>
 <body>
 
   <div class="container">
-    <!-- Perfil -->
+
     <div class="profile">
       <img src="https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg" alt="k404modapk" class="profile-img">
       <h1 class="profile-name">k404modapk</h1>
     </div>
 
-    <!-- Links -->
     <div class="links-wrapper">
 
-      <!-- Botão Instagram -->
+      <!-- INSTAGRAM FIXO -->
       <a href="https://www.instagram.com/kennedy_morgy" target="_blank" class="btn btn-instagram">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
@@ -243,7 +236,7 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </a>
 
-      <!-- Botão YouTube -->
+      <!-- YOUTUBE FIXO -->
       <a href="https://www.youtube.com/@K404Oficial" target="_blank" class="btn btn-youtube">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="30" height="30" fill="#ffffff">
@@ -256,7 +249,7 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </a>
 
-{download_buttons_html}
+{downloads_html}
 
     </div>
   </div>
@@ -268,7 +261,8 @@ html_content = f'''<!DOCTYPE html>
   </footer>
 
 </body>
-</html>'''
+</html>
+'''
 
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
