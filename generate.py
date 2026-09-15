@@ -1,15 +1,25 @@
 import os
+import re
+
+slug = os.environ.get("SLUG", "index").strip().lower()
+
+# Formata o nome do arquivo para ser seguro em URLs
+if not slug or slug == "index":
+    filename = "index.html"
+else:
+    slug_clean = re.sub(r'[^a-z0-9\-]', '', slug.replace(' ', '-'))
+    filename = f"{slug_clean}.html"
+
+foto_url = os.environ.get("FOTO_URL", "").strip()
+if not foto_url:
+    foto_url = "https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg"
 
 texto1 = os.environ.get("TEXTO1", "").strip()
 link1 = os.environ.get("LINK1", "").strip()
-
 texto2 = os.environ.get("TEXTO2", "").strip()
 link2 = os.environ.get("LINK2", "").strip()
-
 texto3 = os.environ.get("TEXTO3", "").strip()
 link3 = os.environ.get("LINK3", "").strip()
-
-downloads_html = ""
 
 links_data = [
     (texto1, link1),
@@ -17,13 +27,14 @@ links_data = [
     (texto3, link3),
 ]
 
+downloads_html = ""
 for texto, link in links_data:
-    if link:  # Só cria o botão se o link for preenchido
+    if link:
         titulo = texto if texto else "Download APK"
         downloads_html += f'''
       <a href="{link}" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -31,7 +42,12 @@ for texto, link in links_data:
         </div>
         <div class="btn-content">
           <span class="btn-title">{titulo}</span>
-          <span class="btn-subtitle">Clique para baixar</span>
+          <span class="btn-subtitle">Clique para baixar arquivo</span>
+        </div>
+        <div class="btn-arrow">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#64748b" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
         </div>
       </a>
 '''
@@ -51,8 +67,8 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     body {{
-      background-color: #f4f6f8;
-      color: #111827;
+      background-color: #0f172a;
+      color: #f8fafc;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -63,7 +79,7 @@ html_content = f'''<!DOCTYPE html>
 
     .container {{
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -73,31 +89,48 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 26px;
+      margin-bottom: 28px;
     }}
 
-    .profile-img {{
+    .profile-img-container {{
+      position: relative;
       width: 100px;
       height: 100px;
       border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+    }}
+
+    .profile-img {{
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
       object-fit: cover;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      border: 4px solid #ffffff;
+      background-color: #1e293b;
+      border: 3px solid #0f172a;
     }}
 
     .profile-name {{
       font-size: 1.5rem;
       font-weight: 800;
       margin-top: 14px;
-      color: #0f172a;
+      color: #ffffff;
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }}
+
+    .verified-badge {{
+      color: #38bdf8;
     }}
 
     .links-wrapper {{
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }}
 
     .btn {{
@@ -106,20 +139,25 @@ html_content = f'''<!DOCTYPE html>
       justify-content: flex-start;
       width: 100%;
       padding: 16px 18px;
-      border-radius: 18px;
+      border-radius: 20px;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }}
+
+    .btn:hover {{
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
     }}
 
     .btn:active {{
-      transform: scale(0.97);
+      transform: translateY(1px);
     }}
 
     .btn-icon {{
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       flex-shrink: 0;
       margin-right: 14px;
       display: flex;
@@ -131,6 +169,7 @@ html_content = f'''<!DOCTYPE html>
       display: flex;
       flex-direction: column;
       text-align: left;
+      flex-grow: 1;
     }}
 
     .btn-title {{
@@ -140,57 +179,61 @@ html_content = f'''<!DOCTYPE html>
     }}
 
     .btn-subtitle {{
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       margin-top: 2px;
+      opacity: 0.85;
     }}
 
+    .btn-arrow {{
+      display: flex;
+      align-items: center;
+    }}
+
+    /* INSTAGRAM */
     .btn-instagram {{
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
       color: #ffffff;
     }}
-    .btn-instagram .btn-subtitle {{
-      color: rgba(255, 255, 255, 0.9);
-    }}
 
+    /* YOUTUBE */
     .btn-youtube {{
-      background-color: #FF0000;
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
       color: #ffffff;
     }}
-    .btn-youtube .btn-subtitle {{
-      color: rgba(255, 255, 255, 0.9);
-    }}
 
+    /* BOTÃO DE DOWNLOAD PREMIUM */
     .btn-download {{
-      background-color: #ffffff;
-      color: #0f172a;
-      border: 2px solid #0f172a;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      border: 2px solid #38bdf8;
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
     }}
 
     .btn-download .btn-title {{
-      color: #0f172a;
+      color: #ffffff;
     }}
 
     .btn-download .btn-subtitle {{
-      color: #64748b;
+      color: #94a3b8;
     }}
 
     footer {{
-      margin-top: 36px;
+      margin-top: 40px;
     }}
 
     .footer-link {{
       font-size: 0.88rem;
-      color: #64748b;
+      color: #94a3b8;
       text-decoration: none;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: color 0.2s ease;
     }}
 
     .footer-link:hover {{
-      color: #0f172a;
+      color: #38bdf8;
     }}
   </style>
 </head>
@@ -199,8 +242,15 @@ html_content = f'''<!DOCTYPE html>
   <div class="container">
 
     <div class="profile">
-      <img src="https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg" alt="k404modapk" class="profile-img">
-      <h1 class="profile-name">k404modapk</h1>
+      <div class="profile-img-container">
+        <img src="{foto_url}" alt="k404modapk" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=K404&background=0D8ABC&color=fff&size=128';">
+      </div>
+      <h1 class="profile-name">
+        k404modapk
+        <svg class="verified-badge" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </h1>
     </div>
 
     <div class="links-wrapper">
@@ -246,7 +296,7 @@ html_content = f'''<!DOCTYPE html>
 </html>
 '''
 
-with open("index.html", "w", encoding="utf-8") as f:
+with open(filename, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("index.html gerado com sucesso!")
+print(f"Página {filename} gerada com sucesso!")
