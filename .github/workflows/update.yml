@@ -3,36 +3,20 @@ name: Criar Página de Jogo
 on:
   workflow_dispatch:
     inputs:
-      slug:
-        description: 'Nome do Jogo/URL (Ex: avakin, free fire, gta 5)'
+      nome_jogo:
+        description: 'Nome do Jogo (Ex: Avakin Mod APK)'
         required: true
-        default: 'avakin'
-      foto_url:
-        description: 'URL da Foto (Deixe em branco para usar a sua foto oficial)'
-        required: false
-        default: ''
-      texto1:
-        description: 'Texto do Botão 1 (Ex: Avakin Life 64bits)'
-        required: false
         default: ''
       link1:
-        description: 'Link de Download 1'
-        required: false
+        description: 'Link do Download 1 (Mediafire, Mega, etc)'
+        required: true
         default: ''
-      texto2:
-        description: 'Texto do Botão 2 (Ex: Avakin Life 32bits)'
+      nome2:
+        description: 'Nome do Botão 2 (Opcional - Ex: Arquivo OBB)'
         required: false
         default: ''
       link2:
-        description: 'Link de Download 2'
-        required: false
-        default: ''
-      texto3:
-        description: 'Texto do Botão 3 (Ex: Arquivo OBB)'
-        required: false
-        default: ''
-      link3:
-        description: 'Link de Download 3'
+        description: 'Link do Download 2 (Opcional)'
         required: false
         default: ''
 
@@ -51,16 +35,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Gerar Página e Link
+      - name: Gerar Página e Exibir Link
         env:
-          SLUG: ${{ github.event.inputs.slug }}
-          FOTO_URL: ${{ github.event.inputs.foto_url }}
-          TEXTO1: ${{ github.event.inputs.texto1 }}
+          NOME_JOGO: ${{ github.event.inputs.nome_jogo }}
           LINK1: ${{ github.event.inputs.link1 }}
-          TEXTO2: ${{ github.event.inputs.texto2 }}
+          NOME2: ${{ github.event.inputs.nome2 }}
           LINK2: ${{ github.event.inputs.link2 }}
-          TEXTO3: ${{ github.event.inputs.texto3 }}
-          LINK3: ${{ github.event.inputs.link3 }}
           GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
         run: python generate.py
 
@@ -69,5 +49,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Adicionando jogo ${{ github.event.inputs.slug }}" || exit 0
+          git commit -m "Adicionando jogo ${{ github.event.inputs.nome_jogo }}" || exit 0
           git push
