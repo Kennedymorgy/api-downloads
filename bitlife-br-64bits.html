@@ -16,14 +16,46 @@
     }
 
     body {
-      background-color: #f8fafc;
-      color: #0f172a;
+      background-color: #0b0f19;
+      color: #f1f5f9;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      padding: 24px 16px 32px;
+      padding: 36px 16px 32px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Efeito de Chuva Cinematográfica */
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 100%);
+    }
+
+    .drop {
+      position: absolute;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.25));
+      width: 1px;
+      height: 25px;
+      opacity: 0.6;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px);
+      }
+      100% {
+        transform: translateY(105vh);
+      }
     }
 
     .container {
@@ -32,6 +64,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     .profile {
@@ -46,8 +80,8 @@
       height: 108px;
       border-radius: 50%;
       object-fit: cover;
-      border: none;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
     .profile-name {
@@ -55,9 +89,10 @@
       font-size: 2.3rem;
       font-weight: 700;
       margin-top: 6px;
-      color: #0f172a;
+      color: #ffffff;
       letter-spacing: 0.02em;
       display: inline-block;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
       animation: pulse 3s ease-in-out infinite;
     }
 
@@ -66,8 +101,36 @@
         transform: scale(1);
       }
       50% {
-        transform: scale(1.09);
+        transform: scale(1.05);
       }
+    }
+
+    /* Divisor elegante estilo filme */
+    .divider {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 16px 0 10px 0;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .divider::before {
+      margin-right: .75em;
+    }
+
+    .divider::after {
+      margin-left: .75em;
     }
 
     .links-wrapper {
@@ -77,25 +140,31 @@
       gap: 14px;
     }
 
+    /* Estilo Base Botão 3D Cinematográfico */
     .btn {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       width: 100%;
       padding: 16px 18px;
-      border-radius: 18px;
+      border-radius: 16px;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
       position: relative;
+      transition: all 0.1s ease;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .btn-icon {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       flex-shrink: 0;
       margin-right: 14px;
       display: flex;
@@ -111,7 +180,7 @@
     }
 
     .btn-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       line-height: 1.25;
     }
@@ -122,128 +191,64 @@
     }
 
     .btn-instagram {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
       color: #ffffff;
-      box-shadow: 0 6px 18px rgba(220, 39, 67, 0.22);
     }
     .btn-instagram .btn-subtitle {
       color: rgba(255, 255, 255, 0.9);
     }
 
-    .btn-youtube {
-      background-color: #FF0000;
-      color: #ffffff;
-      box-shadow: 0 6px 18px rgba(255, 0, 0, 0.22);
-    }
-    .btn-youtube .btn-subtitle {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .download-section {
-      margin-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      width: 100%;
-    }
-
-    .section-divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin-bottom: 2px;
-    }
-
-    .section-divider span {
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: #64748b;
-      width: 100%;
-    }
-
-    /* ESTILO EXATO DA SUA IMAGEM LINKME.BIO */
     .btn-download {
-      background: #ffffff;
-      color: #000000;
-      border: 1.5px solid #000000;
-      border-radius: 16px;
-      padding: 18px 20px;
-      box-shadow: 0px 5px 0px #000000;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-download .btn-content {
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #ffffff;
+      border-left: 3px solid #3b82f6;
     }
 
     .btn-download .btn-title {
-      color: #000000;
-      font-size: 1.15rem;
+      color: #ffffff;
+      font-size: 1.1rem;
       font-weight: 800;
     }
 
-    /* EFEITO DE LUZ/BRILHO PASSANDO */
-    .btn-download::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -150%;
-      width: 70%;
-      height: 200%;
-      background: linear-gradient(
-        60deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(0, 0, 0, 0.06) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: rotate(25deg);
-      animation: shine 3.5s infinite ease-in-out;
-    }
-
-    @keyframes shine {
-      0% {
-        left: -150%;
-      }
-      25% {
-        left: 150%;
-      }
-      100% {
-        left: 150%;
-      }
+    .btn-download .btn-subtitle {
+      color: #94a3b8;
     }
 
     footer {
-      margin-top: 28px;
+      margin-top: 32px;
       display: flex;
       justify-content: center;
       width: 100%;
+      position: relative;
+      z-index: 2;
     }
 
     .footer-link {
-      font-size: 0.9rem;
-      color: #2563eb;
-      background: #eff6ff;
-      border: 1.5px solid #bfdbfe;
+      font-size: 0.88rem;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 10px 20px;
       border-radius: 25px;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
-      transition: transform 0.15s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
     }
 
-    .footer-link:active {
-      transform: scale(0.96);
+    .footer-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
 <body>
+
+  <!-- Elemento de Chuva Cinematográfica -->
+  <div class="rain" id="rain"></div>
 
   <div class="container">
 
@@ -253,6 +258,9 @@
     </div>
 
     <div class="links-wrapper">
+
+      <!-- SEÇÃO REDES SOCIAIS -->
+      <div class="divider">Rede Social</div>
 
       <a href="https://www.instagram.com/kennedy_morgy" target="_blank" class="btn btn-instagram">
         <div class="btn-icon">
@@ -266,27 +274,13 @@
         </div>
       </a>
 
-      <a href="https://www.youtube.com/@K404Oficial" target="_blank" class="btn btn-youtube">
-        <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="#ffffff">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-        </div>
-        <div class="btn-content">
-          <span class="btn-title">Inscrever-se no Canal</span>
-          <span class="btn-subtitle">@K404Oficial</span>
-        </div>
-      </a>
 
-
-    <div class="download-section">
-      <div class="section-divider">
-        <span>ÁREA DE DOWNLOAD</span>
-      </div>
+      <!-- SEÇÃO DOWNLOADS -->
+      <div class="divider">Área de Download</div>
       
       <a href="https://www.mediafire.com/file/qlwxhgzy0ra2lwm/64Bits_BitLife+BR+v1.19.14+Mod+Menu+-+BETA+v1+-+By+HMODs.apk/file?dkey=j29wjkx0hrx&r=1888" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -294,12 +288,13 @@
         </div>
         <div class="btn-content">
           <span class="btn-title">BitLife BR  64BITS</span>
+          <span class="btn-subtitle">Clique para baixar</span>
         </div>
       </a>
 
       <a href="https://www.mediafire.com/file/qlwxhgzy0ra2lwm/64Bits_BitLife+BR+v1.19.14+Mod+Menu+-+BETA+v1+-+By+HMODs.apk/file?dkey=j29wjkx0hrx&r=1888" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -307,10 +302,10 @@
         </div>
         <div class="btn-content">
           <span class="btn-title">BitLife BR  32BITS</span>
+          <span class="btn-subtitle">Clique para baixar</span>
         </div>
       </a>
 
-    </div>
 
 
     </div>
@@ -322,6 +317,22 @@
     </footer>
 
   </div>
+
+  <!-- Script para gerar a chuva automatizada -->
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const dropCount = 40;
+
+    for (let i = 0; i < dropCount; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + 'vw';
+      drop.style.top = (Math.random() * -50) + 'px';
+      drop.style.animationDuration = (0.7 + Math.random() * 0.8) + 's';
+      drop.style.animationDelay = (Math.random() * 5) + 's';
+      rainContainer.appendChild(drop);
+    }
+  </script>
 
 </body>
 </html>
