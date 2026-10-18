@@ -349,7 +349,7 @@ html_content = f'''<!DOCTYPE html>
     const rainContainer = document.getElementById('rain');
     const dropCount = 40;
 
-    for (let i = 0; i < dropCount; i++) {
+    for (let i = 0; i < dropCount; i++) {{
       const drop = document.createElement('div');
       drop.classList.add('drop');
       drop.style.left = Math.random() * 100 + 'vw';
@@ -357,7 +357,7 @@ html_content = f'''<!DOCTYPE html>
       drop.style.animationDuration = (0.7 + Math.random() * 0.8) + 's';
       drop.style.animationDelay = (Math.random() * 5) + 's';
       rainContainer.appendChild(drop);
-    }
+    }}
   </script>
 
 </body>
