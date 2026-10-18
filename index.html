@@ -13,14 +13,47 @@
     }
 
     body {
-      background-color: #f4f6f8;
-      color: #111827;
+      background-color: #0b0f19;
+      color: #f1f5f9;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       min-height: 100vh;
       padding: 36px 16px 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Efeito de Chuva Cinematográfica */
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      background-image: 
+        linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 100%);
+    }
+
+    .drop {
+      position: absolute;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.2));
+      width: 1px;
+      height: 25px;
+      opacity: 0.7;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px);
+      }
+      100% {
+        transform: translateY(105vh);
+      }
     }
 
     .container {
@@ -29,13 +62,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     .profile {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
 
     .profile-img {
@@ -43,16 +78,45 @@
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      border: 4px solid #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.15);
     }
 
     .profile-name {
       font-size: 1.5rem;
       font-weight: 800;
       margin-top: 14px;
-      color: #0f172a;
+      color: #ffffff;
       letter-spacing: -0.02em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Divisor elegante */
+    .divider {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 18px 0 12px 0;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .divider::before {
+      margin-right: .75em;
+    }
+
+    .divider::after {
+      margin-left: .75em;
     }
 
     .links-wrapper {
@@ -62,21 +126,27 @@
       gap: 14px;
     }
 
+    /* Estilo Base Botão 3D */
     .btn {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       width: 100%;
       padding: 16px 18px;
-      border-radius: 18px;
+      border-radius: 16px;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
       position: relative;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      transition: all 0.1s ease;
+      /* Efeito 3D com sombras e relevo na borda superior */
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .btn:active {
-      transform: scale(0.97);
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .btn-icon {
@@ -106,39 +176,33 @@
       margin-top: 2px;
     }
 
+    /* Cores dos Botões com toque refinado */
     .btn-instagram {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
       color: #ffffff;
     }
     .btn-instagram .btn-subtitle {
       color: rgba(255, 255, 255, 0.9);
     }
 
-    .btn-youtube {
-      background-color: #FF0000;
-      color: #ffffff;
-    }
-    .btn-youtube .btn-subtitle {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
     .btn-download {
-      background-color: #ffffff;
-      color: #0f172a;
-      border: 2px solid #0f172a;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #ffffff;
+      border-left: 3px solid #3b82f6;
     }
 
     .btn-download .btn-title {
-      color: #0f172a;
+      color: #ffffff;
     }
 
     .btn-download .btn-subtitle {
-      color: #64748b;
+      color: #94a3b8;
     }
 
     footer {
       margin-top: 36px;
+      position: relative;
+      z-index: 2;
     }
 
     .footer-link {
@@ -149,14 +213,18 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: color 0.2s;
     }
 
     .footer-link:hover {
-      color: #0f172a;
+      color: #cbd5e1;
     }
   </style>
 </head>
 <body>
+
+  <!-- Elemento de Chuva Cinematográfica -->
+  <div class="rain" id="rain"></div>
 
   <div class="container">
 
@@ -167,7 +235,9 @@
 
     <div class="links-wrapper">
 
-      <!-- INSTAGRAM FIXO -->
+      <!-- SEÇÃO REDES SOCIAIS -->
+      <div class="divider">Rede Social</div>
+
       <a href="https://www.instagram.com/kennedy_morgy" target="_blank" class="btn btn-instagram">
         <div class="btn-icon">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
@@ -180,23 +250,12 @@
         </div>
       </a>
 
-      <!-- YOUTUBE FIXO -->
-      <a href="https://www.youtube.com/@K404Oficial" target="_blank" class="btn btn-youtube">
-        <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="#ffffff">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-        </div>
-        <div class="btn-content">
-          <span class="btn-title">Inscrever-se no Canal</span>
-          <span class="btn-subtitle">@K404Oficial</span>
-        </div>
-      </a>
-
+      <!-- SEÇÃO DOWNLOADS -->
+      <div class="divider">Downloads</div>
 
       <a href="https://www.mediafire.com/file/1vz806m0yrfafh5/Gold+Vip.apk/file?dkey=b3iazadx7cb&r=1903" target="_blank" class="btn btn-download">
         <div class="btn-icon">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -208,7 +267,6 @@
         </div>
       </a>
 
-
     </div>
   </div>
 
@@ -217,6 +275,22 @@
       🌐 k-404modapk.blogspot.com
     </a>
   </footer>
+
+  <!-- Script para gerar a chuva automatizada -->
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const dropCount = 40;
+
+    for (let i = 0; i < dropCount; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + 'vw';
+      drop.style.top = (Math.random() * -50) + 'px';
+      drop.style.animationDuration = (0.7 + Math.random() * 0.8) + 's';
+      drop.style.animationDelay = (Math.random() * 5) + 's';
+      rainContainer.appendChild(drop);
+    }
+  </script>
 
 </body>
 </html>
