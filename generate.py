@@ -1,5 +1,14 @@
 import os
 import re
+import glob
+
+# Limpa arquivos HTML antigos da pasta antes de gerar o novo para não acumular lixo ou links errados
+for old_file in glob.glob("*.html"):
+    try:
+        os.remove(old_file)
+        print(f"🗑️ Arquivo antigo removido: {old_file}")
+    except Exception as e:
+        print(f"Não foi possível remover {old_file}: {e}")
 
 nome_jogo = os.environ.get("NOME_JOGO", "").strip()
 link1 = os.environ.get("LINK1", "").strip()
