@@ -1,14 +1,5 @@
 import os
 import re
-import glob
-
-# Limpa arquivos HTML antigos da pasta antes de gerar o novo para não acumular lixo ou links errados
-for old_file in glob.glob("*.html"):
-    try:
-        os.remove(old_file)
-        print(f"🗑️ Arquivo antigo removido: {old_file}")
-    except Exception as e:
-        print(f"Não foi possível remover {old_file}: {e}")
 
 nome_jogo = os.environ.get("NOME_JOGO", "").strip()
 link1 = os.environ.get("LINK1", "").strip()
@@ -18,7 +9,7 @@ link2 = os.environ.get("LINK2", "").strip()
 if not nome_jogo:
     nome_jogo = "download"
 
-# Gera o nome do arquivo .html limpo
+# Gera o nome do arquivo .html limpo e único para cada jogo (ex: bitlife-br.html, bitlife.html)
 slug_clean = re.sub(r'[^a-z0-9\-]', '', nome_jogo.lower().replace(' ', '-'))
 slug_clean = re.sub(r'-+', '-', slug_clean).strip('-')
 if not slug_clean:
@@ -70,7 +61,7 @@ html_content = f'''<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>k404modapk - Downloads</title>
+  <title>k404modapk - {nome_jogo}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
