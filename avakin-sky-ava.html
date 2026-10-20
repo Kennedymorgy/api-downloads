@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>k404modapk - Avakin Sky Ava</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 36px 16px 32px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Efeito de Chuva Cinematográfica */
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 100%);
+    }
+
+    .drop {
+      position: absolute;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.25));
+      width: 1px;
+      height: 25px;
+      opacity: 0.6;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px);
+      }
+      100% {
+        transform: translateY(105vh);
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-img {
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-name {
+      font-family: 'Dancing Script', cursive, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      margin-top: 6px;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      display: inline-block;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* Divisor elegante estilo filme */
+    .divider {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 16px 0 10px 0;
+      color: #64748b;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .divider::before {
+      margin-right: .75em;
+    }
+
+    .divider::after {
+      margin-left: .75em;
+    }
+
+    .links-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Estilo Base Botão 3D Cinematográfico */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      position: relative;
+      transition: all 0.1s ease;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      margin-right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-content {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      width: 100%;
+    }
+
+    .btn-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .btn-subtitle {
+      font-size: 0.82rem;
+      margin-top: 2px;
+    }
+
+    .btn-instagram {
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      color: #ffffff;
+    }
+    .btn-instagram .btn-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #ffffff;
+      border-left: 3px solid #3b82f6;
+    }
+
+    .btn-download .btn-title {
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .btn-download .btn-subtitle {
+      color: #94a3b8;
+    }
+
+    footer {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-link {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Elemento de Chuva Cinematográfica -->
+  <div class="rain" id="rain"></div>
+
+  <div class="container">
+
+    <div class="profile">
+      <img src="https://i.ibb.co/bxdr44V/image-downloader-1787418859773.jpg" alt="k404modapk" class="profile-img">
+      <h1 class="profile-name">k404modapk</h1>
+    </div>
+
+    <div class="links-wrapper">
+
+      <!-- SEÇÃO REDES SOCIAIS -->
+      <div class="divider">Rede Social</div>
+
+      <a href="https://www.instagram.com/kennedy_morgy" target="_blank" class="btn btn-instagram">
+        <div class="btn-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="#ffffff">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </div>
+        <div class="btn-content">
+          <span class="btn-title">Seguir no Instagram</span>
+          <span class="btn-subtitle">@kennedy_morgy</span>
+        </div>
+      </a>
+
+
+      <!-- SEÇÃO DOWNLOADS -->
+      <div class="divider">Área de Download</div>
+      
+      <a href="https://www.mediafire.com/file/w0rlv9cqdxad52w/Sky_Ava.apk/file" target="_blank" class="btn btn-download">
+        <div class="btn-icon">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </div>
+        <div class="btn-content">
+          <span class="btn-title">Avakin Sky Ava</span>
+          <span class="btn-subtitle">Clique para baixar</span>
+        </div>
+      </a>
+
+
+
+    </div>
+
+    <footer>
+      <a href="https://k-404modapk.blogspot.com" target="_blank" class="footer-link">
+        🌐 Visite nosso Blog Oficial
+      </a>
+    </footer>
+
+  </div>
+
+  <!-- Script para gerar a chuva automatizada -->
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const dropCount = 40;
+
+    for (let i = 0; i < dropCount; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + 'vw';
+      drop.style.top = (Math.random() * -50) + 'px';
+      drop.style.animationDuration = (0.7 + Math.random() * 0.8) + 's';
+      drop.style.animationDelay = (Math.random() * 5) + 's';
+      rainContainer.appendChild(drop);
+    }
+  </script>
+
+</body>
+</html>
